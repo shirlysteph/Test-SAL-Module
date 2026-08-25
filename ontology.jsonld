@@ -1,0 +1,42 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "gsp": "http://www.opengis.net/ont/geosparql#",
+    "salmodule": "https://w3id.org/sal/cgs-earth/sal-module-spec/salmodule#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "sh": "http://www.w3.org/ns/shacl#",
+    "sf": "http://www.opengis.net/ont/sf#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+  },
+  "@graph": [
+    {
+      "@id": ".",
+      "@type": "owl:Ontology",
+      "dc:creator": "Shirly Stephen",
+      "dc:title": "Community Water System Triplification SAL Module",
+      "owl:versionInfo": "1.0"
+    },
+    {
+      "@id": "CommunityWaterSystemFeature",
+      "@type": "owl:Class",
+      "rdfs:label": "Community water system feature task",
+      "rdfs:comment": "Fetches and triplifies community water system service-area features.",
+      "rdfs:subClassOf": {
+        "@id": "salmodule:Task"
+      }
+    },
+    {
+      "@id": "maxRetries",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "The maximum number of retry attempts to connect to the reference feature server before giving up.",
+      "rdfs:domain": {
+        "@id": "CommunityWaterSystemFeature"
+      },
+      "rdfs:range": {
+        "@id": "xsd:integer"
+      }
+    }
+  ]
+}

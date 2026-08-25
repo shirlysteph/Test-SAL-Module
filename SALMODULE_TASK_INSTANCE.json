@@ -1,0 +1,12 @@
+[
+  {
+    "@id": "https://data.cgsearth.org/sal-run/community-water-systems-001",
+    "@type": "CommunityWaterSystemFeature",
+    "maxRetries": 5
+  },
+  {
+    "@id": "https://data.cgsearth.org/sal-run/community-water-systems-002",
+    "@type": "CommunityWaterSystemFeature",
+    "maxRetries": 3
+  }
+]

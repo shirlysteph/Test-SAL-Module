@@ -1,0 +1,246 @@
+@prefix pwssab:  <https://www.epa.gov/ontology/pwssab#> .
+@prefix cgs-mapping:  <http://cgsearth.org/ontology/mapping#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://www.epa.gov/ontology/pwssab>
+    a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    dct:title "EPA Public Water System Service Area Boundary Ontology"@en ;
+    dct:description "An OWL ontology derived from metadata for the EPA ORD water system service area boundary layers CWS and T_NTNC."@en ;
+    dct:creator "Center for Geospatial Solutions (CGS)"@en ;
+    dct:source <https://github.com/USEPA/ORD_SAB_Model/tree/main/Metadata> ;
+    dct:created "2026-08-24"^^xsd:date ;
+    rdfs:seeAlso <https://github.com/USEPA/ORD_SAB_Model> .
+
+# Annotation property preserving the source layer's exact column name.
+cgs-mapping:sourceFieldName a owl:AnnotationProperty ;
+    rdfs:label "source field name"@en ;
+    rdfs:comment "Exact column name used in the source layer metadata."@en .
+
+### Core classes
+
+pwssab:WaterServiceAreaBoundary a owl:Class ;
+    rdfs:subClassOf geo:Feature ;
+    rdfs:label "water service area boundary"@en ;
+    rdfs:comment "A polygon feature representing the service area of a public water system."@en .
+
+pwssab:CommunityWaterSystemBoundary a owl:Class ;
+    rdfs:subClassOf pwssab:WaterServiceAreaBoundary ;
+    rdfs:label "community water system boundary"@en ;
+    rdfs:comment "A feature in the CWS layer."@en .
+
+pwssab:NonCommunityWaterSystemBoundary a owl:Class ;
+    rdfs:subClassOf pwssab:WaterServiceAreaBoundary ;
+    rdfs:label "transient or non-transient non-community water system boundary"@en ;
+    rdfs:comment "A feature in the T_NTNC layer."@en .
+
+pwssab:Agent a owl:Class ;
+    rdfs:label "agent"@en ;
+    rdfs:comment "An organization or other entity acting as provider, verifier, or primacy agency."@en .
+
+### Shared datatype properties
+
+pwssab:pwsIdentifier a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain pwssab:WaterServiceAreaBoundary ; rdfs:range xsd:string ;
+    rdfs:label "public water system identifier"@en ;
+    rdfs:comment "Public water system identifier as assigned by SDWIS."@en ;
+    cgs-mapping:sourceFieldName "PWSID" .
+
+pwssab:pwsName a owl:DatatypeProperty ;
+    rdfs:domain pwssab:WaterServiceAreaBoundary ; rdfs:range xsd:string ;
+    rdfs:label "public water system name"@en ;
+    rdfs:comment "Name of the public water system as reported to SDWIS."@en ;
+    cgs-mapping:sourceFieldName "PWS_Name" .
+
+pwssab:populationServedCount a owl:DatatypeProperty ;
+    rdfs:domain pwssab:WaterServiceAreaBoundary ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "population served count"@en ;
+    rdfs:comment "The reported population that the system serves."@en ;
+    cgs-mapping:sourceFieldName "Population_Served_Count" .
+
+pwssab:serviceConnectionsCount a owl:DatatypeProperty ;
+    rdfs:domain pwssab:WaterServiceAreaBoundary ; rdfs:range xsd:nonNegativeInteger ;
+    rdfs:label "service connections count"@en ;
+    rdfs:comment "The reported number of service connections in the system."@en ;
+    cgs-mapping:sourceFieldName "Service_Connections_Count" .
+
+pwssab:primacyAgencyCode a owl:DatatypeProperty ;
+    rdfs:domain pwssab:WaterServiceAreaBoundary ; rdfs:range xsd:string ;
+    rdfs:label "primacy agency code"@en ;
+    rdfs:comment "Code for the state or EPA region that holds primacy and handles reporting."@en ;
+    cgs-mapping:sourceFieldName "PRIMACY_AGENCY_CODE" .
+
+pwssab:primacyAgencyName a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "primacy agency"@en ;
+    rdfs:comment "The state or EPA region that holds primacy and handles reporting."@en ;
+    cgs-mapping:sourceFieldName "Primacy_Agency" .
+
+pwssab:serviceAreaType a owl:DatatypeProperty ;
+    rdfs:domain pwssab:WaterServiceAreaBoundary ; rdfs:range xsd:string ;
+    rdfs:label "service area type"@en ;
+    rdfs:comment "The primary type of area served by the system, as reported to SDWIS."@en ;
+    cgs-mapping:sourceFieldName "Service_Area_Type", "SERVICE_AREA_TYPE" .
+
+### T_NTNC layer properties
+
+pwssab:locationConfidence a owl:ObjectProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range pwssab:LocationConfidence ;
+    rdfs:label "location confidence"@en ; cgs-mapping:sourceFieldName "Location Confidence" .
+
+pwssab:pwsTypeCode a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "public water system type code"@en ;
+    rdfs:comment "Code identifying the transient or non-transient non-community public water system type."@en ;
+    cgs-mapping:sourceFieldName "PWS_TYPE_CODE" .
+
+pwssab:primarySource a owl:ObjectProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range pwssab:PrimaryWaterSource ;
+    rdfs:label "primary water source"@en ; cgs-mapping:sourceFieldName "PRIMARY_SOURCE_CODE" .
+
+pwssab:isWholesaler a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:boolean ;
+    rdfs:label "is wholesaler"@en ;
+    rdfs:comment "Whether the system primarily sells the water it produces to other water systems."@en ;
+    cgs-mapping:sourceFieldName "IS_WHOLESALER_IND" .
+
+pwssab:isSchoolOrDaycare a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:boolean ;
+    rdfs:label "is school or daycare"@en ;
+    rdfs:comment "Whether the system is primarily a school or daycare."@en ;
+    cgs-mapping:sourceFieldName "IS_SCHOOL_OR_DAYCARE_IND" .
+
+pwssab:parcelIdentifier a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "parcel identifier"@en ; rdfs:comment "Unique parcel identifier."@en ;
+    cgs-mapping:sourceFieldName "parcelnumb" .
+
+pwssab:areaSquareKilometres a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:decimal ;
+    rdfs:label "area in square kilometres"@en ; cgs-mapping:sourceFieldName "AREAKM" .
+
+pwssab:detailedFacilityReport a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:anyURI ;
+    rdfs:label "detailed facility report"@en ;
+    rdfs:comment "Link to the EPA ECHO detailed enforcement and compliance history."@en ;
+    cgs-mapping:sourceFieldName "Detailed_Facility_Report" .
+
+pwssab:dataSource a owl:DatatypeProperty ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "data source"@en ; cgs-mapping:sourceFieldName "Data_Source" .
+
+pwssab:shape a owl:ObjectProperty ;
+    rdfs:subPropertyOf geo:hasGeometry ;
+    rdfs:domain pwssab:NonCommunityWaterSystemBoundary ; rdfs:range geo:Geometry ;
+    rdfs:label "shape"@en ; rdfs:comment "Polygon geometry."@en ;
+    cgs-mapping:sourceFieldName "Shape" .
+
+### CWS layer properties
+
+pwssab:populationCategory a owl:ObjectProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range pwssab:PopulationCategory ;
+    rdfs:label "population category"@en ; cgs-mapping:sourceFieldName "Pop_Cat_5" .
+
+pwssab:boundaryDerivationMethod a owl:ObjectProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range pwssab:BoundaryDerivationMethod ;
+    rdfs:label "boundary derivation method"@en ; cgs-mapping:sourceFieldName "Method" .
+
+pwssab:symbologyCategory a owl:ObjectProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range pwssab:SymbologyCategory ;
+    rdfs:label "symbology category"@en ; cgs-mapping:sourceFieldName "Symbology_Field" .
+
+pwssab:originalDataProvider a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "original data provider"@en ; rdfs:comment "Source of the original data."@en ;
+    cgs-mapping:sourceFieldName "Original_Data_Provider" .
+
+pwssab:dataProviderType a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "data provider type"@en ; rdfs:comment "Type of source for the original data."@en ;
+    cgs-mapping:sourceFieldName "Data Provider Type" .
+
+pwssab:boundaryMethod a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "boundary method"@en ; rdfs:comment "How the original data was sourced."@en ;
+    cgs-mapping:sourceFieldName "Boundary Method" .
+
+pwssab:methodBasis a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "method basis"@en ; rdfs:comment "How the original data was developed."@en ;
+    cgs-mapping:sourceFieldName "Method Basis" .
+
+pwssab:dateCreated a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:date ;
+    rdfs:label "date created"@en ; cgs-mapping:sourceFieldName "Date Created" .
+
+pwssab:dateModified a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:date ;
+    rdfs:label "date modified"@en ; cgs-mapping:sourceFieldName "Date Modified" .
+
+pwssab:systemType a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "system type"@en ;
+    rdfs:comment "Type of system; the metadata specifies Water Service Area as the only value."@en ;
+    cgs-mapping:sourceFieldName "System Type" .
+
+pwssab:verificationStatus a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "verification status"@en ;
+    rdfs:comment "Whether the service area has been verified as correct."@en ;
+    cgs-mapping:sourceFieldName "Verification Status" .
+
+pwssab:verificationDate a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:date ;
+    rdfs:label "verification date"@en ; cgs-mapping:sourceFieldName "Verification Date" .
+
+pwssab:verificationProcess a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "verification process"@en ; rdfs:comment "How verification was performed."@en ;
+    cgs-mapping:sourceFieldName "Verification Process" .
+
+pwssab:verifierType a owl:DatatypeProperty ;
+    rdfs:domain pwssab:CommunityWaterSystemBoundary ; rdfs:range xsd:string ;
+    rdfs:label "verifier type"@en ;
+    rdfs:comment "Type of entity that performed verification, such as a nonprofit or municipality."@en ;
+    cgs-mapping:sourceFieldName "Verifier Type" .
+
+### Controlled vocabularies
+
+pwssab:LocationConfidence a owl:Class ; rdfs:subClassOf skos:Concept ; rdfs:label "location confidence"@en .
+pwssab:HigherConfidence a pwssab:LocationConfidence, skos:Concept ;
+    skos:prefLabel "higher"@en ;
+    skos:definition "Service area estimated with multiple geographic variables pointing to the same parcel location."@en .
+pwssab:LowerConfidence a pwssab:LocationConfidence, skos:Concept ;
+    skos:prefLabel "lower"@en ;
+    skos:definition "Service area estimated with a single geographic variable pointing to a parcel location."@en .
+
+pwssab:PrimaryWaterSource a owl:Class ; rdfs:subClassOf skos:Concept ; rdfs:label "primary water source"@en .
+pwssab:GroundWater a pwssab:PrimaryWaterSource, skos:Concept ; skos:notation "GW" ; skos:prefLabel "ground water"@en .
+pwssab:PurchasedGroundWater a pwssab:PrimaryWaterSource, skos:Concept ; skos:notation "GWP" ; skos:prefLabel "purchased groundwater"@en .
+pwssab:SurfaceWater a pwssab:PrimaryWaterSource, skos:Concept ; skos:notation "SW" ; skos:prefLabel "surface water or purchased surface water"@en .
+pwssab:GroundWaterUnderInfluence a pwssab:PrimaryWaterSource, skos:Concept ; skos:notation "GU" ; skos:prefLabel "groundwater under the influence of surface water"@en .
+
+pwssab:PopulationCategory a owl:Class ; rdfs:subClassOf skos:Concept ; rdfs:label "population category"@en .
+pwssab:Population500OrLess a pwssab:PopulationCategory, skos:Concept ; skos:notation "<=500" ; skos:prefLabel "500 or fewer"@en .
+pwssab:Population501To3300 a pwssab:PopulationCategory, skos:Concept ; skos:notation "501-3,300" ; skos:prefLabel "501 to 3,300"@en .
+pwssab:Population3301To10000 a pwssab:PopulationCategory, skos:Concept ; skos:notation "3,301-10,000" ; skos:prefLabel "3,301 to 10,000"@en .
+pwssab:Population10000To100000 a pwssab:PopulationCategory, skos:Concept ; skos:notation "10,000-100,000" ; skos:prefLabel "10,000 to 100,000"@en .
+pwssab:PopulationOver100000 a pwssab:PopulationCategory, skos:Concept ; skos:notation ">100,000" ; skos:prefLabel "more than 100,000"@en .
+
+pwssab:BoundaryDerivationMethod a owl:Class ; rdfs:subClassOf skos:Concept ; rdfs:label "boundary derivation method"@en .
+pwssab:CensusPlaceMethod a pwssab:BoundaryDerivationMethod, skos:Concept ; skos:prefLabel "Census Place"@en .
+pwssab:DecisionTreeMethod a pwssab:BoundaryDerivationMethod, skos:Concept ; skos:prefLabel "Decision Tree"@en .
+pwssab:OSMMethod a pwssab:BoundaryDerivationMethod, skos:Concept ; skos:prefLabel "OSM"@en .
+pwssab:ParcelMethod a pwssab:BoundaryDerivationMethod, skos:Concept ; skos:prefLabel "Parcel"@en .
+pwssab:RandomForestMethod a pwssab:BoundaryDerivationMethod, skos:Concept ; skos:prefLabel "Random Forest"@en .
+pwssab:StateMethod a pwssab:BoundaryDerivationMethod, skos:Concept ; skos:prefLabel "State"@en .
+
+pwssab:SymbologyCategory a owl:Class ; rdfs:subClassOf skos:Concept ; rdfs:label "symbology category"@en .
+pwssab:ModeledBoundary a pwssab:SymbologyCategory, skos:Concept ; skos:notation "MODELED" ; skos:prefLabel "modeled"@en .
+pwssab:StateBoundary a pwssab:SymbologyCategory, skos:Concept ; skos:notation "STATE" ; skos:prefLabel "state"@en .
